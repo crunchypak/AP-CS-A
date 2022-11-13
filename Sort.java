@@ -11,7 +11,66 @@ public class Sort
     public Sort(int[] arr) {
         this.arr = arr;
     }
-
+    /**
+     * This method sorts the contents of an integer array using a recursive merge sort.
+     */
+    public void mergeSort() {
+        int[] temp = new int[arr.length];
+        if(arr.length > 1) {
+            mergeSortR(0, arr.length - 1, temp);
+        }
+        
+        
+    }
+    private void mergeSortR(int startIdx, int endIdx, int[] temp) {
+        if(startIdx == endIdx) {
+            return;
+        }
+        int midIdx = (startIdx + endIdx) / 2;
+        mergeSortR(startIdx, midIdx, temp);
+        mergeSortR(midIdx + 1, endIdx, temp);
+        merge(startIdx, midIdx, endIdx, temp);
+    }
+    private void merge(int startIdx, int midIdx, int endIdx, int[] temp) {
+        int leftIdx = startIdx;
+        int rightIdx = midIdx + 1;
+        int tempIdx = startIdx;
+        //compares the values on the right side and left side as long as both arrays contain items
+        while(leftIdx <= midIdx && rightIdx <= endIdx) {
+            if(arr[leftIdx] < arr[rightIdx]) {
+                temp[tempIdx] = arr[leftIdx];
+                leftIdx++;
+            }
+            else {
+                temp[tempIdx] = arr[rightIdx];
+                rightIdx++;
+            }
+            tempIdx++;
+        }
+        //if left side is empty, copy over rest from right side into temp
+        if(leftIdx > midIdx) {
+            while(rightIdx <= endIdx) {
+                temp[tempIdx] = arr[rightIdx];
+                tempIdx++;
+                rightIdx++;
+            }
+        }
+        //otherwise, if right side is empty, copy over rest from left side into temp
+        else if(rightIdx > endIdx) {
+            while(leftIdx <= midIdx) {
+                temp[tempIdx] = arr[leftIdx];
+                tempIdx++;
+                leftIdx++;
+            }
+        }
+        //if both sides empty, do nothing
+        //overwrite the merged portion
+        int idx = startIdx;
+        while(idx <= endIdx) {
+            arr[idx] = temp[idx];
+            idx++;
+        }
+    }
     /**
      * This method sorts the contents of an integer array using selection sort.
      */
@@ -40,16 +99,12 @@ public class Sort
     public void insertionSort() {
         int temp;
         int j;
-        //start checking from second item in the array to the end
         for(int i = 1; i < arr.length; i++) {
             temp = arr[i];
-            //keep comparing as long as temp is less than the value to the left of it
             for(j = i - 1; j >= 0 && temp < arr[j]; j--) {
-                //shift the value to the right
                 arr[j + 1] = arr[j];
             }
-            //insert the temp in the correct position
-            arr[j+1] = temp;
+            arr[j + 1] = temp;
         }
     }
 
@@ -68,19 +123,21 @@ public class Sort
     }
 
     public static void main(String[] args) {
-        final int N = 10;
+        
+        final int N = 7;
         int[] arr = new int[N];
         Random rand = new Random();
         for(int i = 0; i < arr.length; i++) {
         arr[i] = rand.nextInt(90) + 10;
         }
-         
-        //int[] arr = {7, 5, 4, 3};
+        
+        //int[] arr = {4, 6, 2, 7, 5, 3, 1};
 
         Sort a = new Sort(arr);
         System.out.println(a);
         //a.selectionSort();
-        a.insertionSort();
+        //a.insertionSort();
+        a.mergeSort();
         System.out.println(a);
     }
 }
